@@ -1,14 +1,13 @@
-import math #to calculate
+import math  # to calculate
 import mysql.connector  # connect to mysql
 import datetime  # get the present time
-from gpiozero import MCP3008  #to measure
-from time import sleep # to wait
-import pygame # to play music
-
+from gpiozero import MCP3008  # to measure
+from time import sleep  # to wait
+import pygame  # to play music
 
 ############################ pygame ##################################
 pygame.init()
-pygame.mixer.pre_init(44100, -16, 2, 512)  # preset the mixer init arguments, set the value first then initialize
+pygame.mixer.pre_init(44100, -16, 2, 512)  # preset the mixer init arguments, set the value first then initialize/////////frequency////////size///////channel/////////buffer
 pygame.mixer.init()  # initialize the mixer module
 
 speaker_volume = 0.5  # set volume
@@ -24,7 +23,7 @@ pygame.mixer.music.load(song)
 
 checktime = 10  # how long the song play
 pygame.mixer.music.pause()
-
+pygame.mixer.music.stop()
 ############### temp and sound ################################
 temp = MCP3008(channel=0)
 sound = MCP3008(channel=1)
@@ -65,9 +64,9 @@ while True:
     ##
     if isOn == 1:  # start or not
         ##clear table first
-        if tableClear:
-            mycursor.execute("truncate table Data_rPi")  # clear the table
-            tableClear = False
+        # if tableClear:
+        #     mycursor.execute("truncate table Data_rPi")  # clear the table
+        #     tableClear = False
         ##measuring
         temperature = round(temp.value * 75 - 22.1, 2)
         decibel = round(math.log(sound.value * 100) * 10.601 + 76.694, 1)
@@ -113,6 +112,7 @@ while True:
     else:
         print("off")
         sleep(1)
-        pygame.mixer.music.pause()
-        tableClear = True
+        pygame.mixer.music.stop()
+        # tableClear = True
+        mycursor.execute("truncate table Data_rPi")  # clear the table
         IndexInTheTable = 1
